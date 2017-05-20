@@ -1462,6 +1462,18 @@ const Mem = new Lang.Class({
             this.total = Math.round(this.gtop.total / this._unitConversion);
         }
     },
+    _pad: function (number) {
+        if (this.useGiB) {
+            if (number < 1) {
+                // examples: 0.01, 0.10, 0.88
+                return number.toFixed(2);
+            }
+            // examples: 5.85, 16.0, 128
+            return number.toPrecision(3);
+        }
+
+        return number;
+    },
     _apply: function () {
         if (this.total === 0) {
             this.vals = this.tip_vals = [0, 0, 0];
@@ -1472,8 +1484,14 @@ const Mem = new Lang.Class({
             }
         }
         this.text_items[0].text = this.tip_vals[0].toString();
-        this.menu_items[0].text = Math.round(this.mem[0] / this.total * 100).toString();
-        this.menu_items[3].text = this.mem[0].toString() + '  /  ' + this.total.toString();
+        this.menu_items[0].text = this.tip_vals[0].toString();
+        if (Style.get('') !== '-compact') {
+            this.menu_items[3].text = this._pad(this.mem[0]).toString() +
+                '  /  ' + this._pad(this.total).toString();
+        } else {
+            this.menu_items[3].text = this._pad(this.mem[0]).toString() +
+                '/' + this._pad(this.total).toString();
+        }
     },
     create_text_items: function () {
         return [new St.Label({style_class: Style.get('sm-status-value'),
@@ -1702,6 +1720,18 @@ const Swap = new Lang.Class({
             this.total = Math.round(this.gtop.total / this._unitConversion);
         }
     },
+    _pad: function (number) {
+        if (this.useGiB) {
+            if (number < 1) {
+                // examples: 0.01, 0.10, 0.88
+                return number.toFixed(2);
+            }
+            // examples: 5.85, 16.0, 128
+            return number.toPrecision(3);
+        }
+
+        return number;
+    },
     _apply: function () {
         if (this.total === 0) {
             this.vals = this.tip_vals = [0];
@@ -1710,8 +1740,14 @@ const Swap = new Lang.Class({
             this.tip_vals[0] = Math.round(this.vals[0] * 100);
         }
         this.text_items[0].text = this.tip_vals[0].toString();
-        this.menu_items[0].text = Math.round(this.swap / this.total * 100).toString();
-        this.menu_items[3].text = this.swap.toString() + '  /  ' + this.total.toString();
+        this.menu_items[0].text = this.tip_vals[0].toString();
+        if (Style.get('') !== '-compact') {
+            this.menu_items[3].text = this._pad(this.swap).toString() +
+                '  /  ' + this._pad(this.total).toString();
+        } else {
+            this.menu_items[3].text = this._pad(this.swap).toString() +
+                '/' + this._pad(this.total).toString();
+        }
     },
 
     create_text_items: function () {
